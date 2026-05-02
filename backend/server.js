@@ -13,9 +13,32 @@ const PORT = process.env.PORT || 5000;
 
 connectDB();
 
+const parseOrigins = (value) =>
+  value
+    ? value
+        .split(",")
+        .map((origin) => origin.trim())
+        .filter(Boolean)
+    : [];
+
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+  "https://ecommerce-nu-eight-38.vercel.app",
+  ...parseOrigins(process.env.CLIENT_URL),
+  ...parseOrigins(process.env.FRONTEND_URL),
+  ...parseOrigins(process.env.CORS_ORIGINS),
+];
+
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://127.0.0.1:3000"],
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
   })
 );
@@ -112,6 +135,10 @@ app.use((req, res) => {
   res.status(404).json({ success: false, message: "Route not found" });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
