@@ -23,6 +23,7 @@ const allowedOrigins = [
   "http://localhost:3000",
   "http://127.0.0.1:3000",
   "https://ecommerce-2vah.vercel.app",
+  "https://ecommerce-styloria-2vah.vercel.app",
   "https://ecommerce-nu-eight-38.vercel.app",
   ...parseOrigins(process.env.CLIENT_URL),
   ...parseOrigins(process.env.FRONTEND_URL),
