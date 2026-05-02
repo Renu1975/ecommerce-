@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { Link,useNavigate} from "react-router-dom";
 import { Heart } from "lucide-react";
 import { useWishlist } from "../context/WishlistContext";
-import pumaLogo from "../images/puma.jpg";
-import levisLogo from "../images/levis.jpg";
 
 function Home() {
   const [email, setEmail] = useState("");
@@ -395,7 +393,7 @@ const handleDiscount = () => {
     },
     {
       name: "Puma",
-      logo: pumaLogo,
+      logo: "https://upload.wikimedia.org/wikipedia/commons/f/fd/Puma_Logo.svg",
     },
     {
       name: "Zara",
@@ -407,7 +405,7 @@ const handleDiscount = () => {
     },
     {
       name: "Levi's",
-      logo: levisLogo,
+      logo: "https://upload.wikimedia.org/wikipedia/commons/0/0b/Levi%27s_logo.svg",
     },
           ].map((brand, i) => (
             <div
