@@ -30,13 +30,38 @@ const allowedOrigins = [
   ...parseOrigins(process.env.CORS_ORIGINS),
 ];
 
+const isAllowedOrigin = (origin) =>
+  !origin ||
+  allowedOrigins.includes(origin) ||
+  /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin);
+
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+
+  if (isAllowedOrigin(origin)) {
+    res.header("Access-Control-Allow-Origin", origin || "*");
+    res.header("Vary", "Origin");
+    res.header("Access-Control-Allow-Credentials", "true");
+    res.header(
+      "Access-Control-Allow-Methods",
+      "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+    );
+    res.header(
+      "Access-Control-Allow-Headers",
+      req.headers["access-control-request-headers"] || "Content-Type,Authorization"
+    );
+  }
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
+
+  return next();
+});
+
 const corsOptions = {
   origin(origin, callback) {
-    if (
-      !origin ||
-      allowedOrigins.includes(origin) ||
-      /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin)
-    ) {
+    if (isAllowedOrigin(origin)) {
       return callback(null, true);
     }
 
@@ -49,7 +74,11 @@ const corsOptions = {
 };
 
 const withDB = async (req, res, next) => {
-  if (!["/signup", "/signin", "/profile"].includes(req.path)) {
+  const needsDB = ["/signup", "/signin", "/profile"].some((path) =>
+    req.path.endsWith(path)
+  );
+
+  if (!needsDB) {
     return next();
   }
 

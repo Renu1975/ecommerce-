@@ -18,16 +18,16 @@ api.interceptors.request.use((config) => {
 });
 
 export const authAPI = {
-  signup: (data) => api.post("/api/signup", data),
-  signin: (data) => api.post("/api/signin", data),
-  getProfile: () => api.get("/api/profile"),
-  updateProfile: (data) => api.put("/api/profile", data),
+  signup: (data) => api.post("/signup", data),
+  signin: (data) => api.post("/signin", data),
+  getProfile: () => api.get("/profile"),
+  updateProfile: (data) => api.put("/profile", data),
 };
 
 export const paymentAPI = {
-  getKey: () => api.get("/api/razorpay-key"),
-  createOrder: (amount) => api.post("/api/create-order", { amount }),
-  verifyPayment: (data) => api.post("/api/verify-payment", data),
+  getKey: () => api.get("/razorpay-key"),
+  createOrder: (amount) => api.post("/create-order", { amount }),
+  verifyPayment: (data) => api.post("/verify-payment", data),
 };
 
 export default api;
