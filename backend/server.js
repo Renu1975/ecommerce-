@@ -11,8 +11,6 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-connectDB();
-
 const parseOrigins = (value) =>
   value
     ? value
@@ -31,25 +29,54 @@ const allowedOrigins = [
   ...parseOrigins(process.env.CORS_ORIGINS),
 ];
 
-app.use(
-  cors({
-    origin(origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
+const corsOptions = {
+  origin(origin, callback) {
+    if (
+      !origin ||
+      allowedOrigins.includes(origin) ||
+      /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin)
+    ) {
+      return callback(null, true);
+    }
 
-      return callback(new Error("Not allowed by CORS"));
-    },
-    credentials: true,
-  })
-);
+    return callback(new Error(`Not allowed by CORS: ${origin}`));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  optionsSuccessStatus: 204,
+};
+
+const withDB = async (req, res, next) => {
+  if (!["/signup", "/signin", "/profile"].includes(req.path)) {
+    return next();
+  }
+
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Database connection failed",
+    });
+  }
+};
+
+app.use(cors(corsOptions));
+app.options(/.*/, cors(corsOptions));
 app.use(express.json());
 
 app.get("/", (req, res) => {
   res.json({ success: true, message: "StyLoria API is running" });
 });
 
-app.use("/", authRoutes);
+app.get("/health", (req, res) => {
+  res.json({ success: true, message: "OK" });
+});
+
+app.use("/", withDB, authRoutes);
+app.use("/api", withDB, authRoutes);
 
 const getRazorpay = () => {
   if (!process.env.KEY_ID || !process.env.KEY_SECRET) {
@@ -62,7 +89,9 @@ const getRazorpay = () => {
   });
 };
 
-app.get("/razorpay-key", (req, res) => {
+const paymentRoutes = express.Router();
+
+paymentRoutes.get("/razorpay-key", (req, res) => {
   if (!process.env.KEY_ID) {
     return res.status(500).json({
       success: false,
@@ -73,7 +102,7 @@ app.get("/razorpay-key", (req, res) => {
   res.json({ success: true, key: process.env.KEY_ID });
 });
 
-app.post("/create-order", async (req, res) => {
+paymentRoutes.post("/create-order", async (req, res) => {
   try {
     const amount = Number(req.body.amount);
     const razorpay = getRazorpay();
@@ -107,7 +136,7 @@ app.post("/create-order", async (req, res) => {
   }
 });
 
-app.post("/verify-payment", (req, res) => {
+paymentRoutes.post("/verify-payment", (req, res) => {
   const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
 
   if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
@@ -131,6 +160,9 @@ app.post("/verify-payment", (req, res) => {
 
   res.json({ success: true, message: "Payment verified successfully" });
 });
+
+app.use("/", paymentRoutes);
+app.use("/api", paymentRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ success: false, message: "Route not found" });
