@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Link,useNavigate} from "react-router-dom";
 import { Heart } from "lucide-react";
 import { useWishlist } from "../context/WishlistContext";
+import pumaLogo from "../images/puma.jpg";
+import levisLogo from "../images/levis.jpg";
 
 function Home() {
   const [email, setEmail] = useState("");
@@ -381,32 +383,32 @@ const handleDiscount = () => {
           <p className="text-gray-500 mt-2">Choose from top fashion brands</p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-6">
-          {[
-            {
-              name: "Nike",
-              logo: "https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg",
-            },
-            {
-              name: "Adidas",
-              logo: "https://upload.wikimedia.org/wikipedia/commons/2/20/Adidas_Logo.svg",
-            },
-            {
-              name: "Puma",
-              logo: "https://upload.wikimedia.org/wikipedia/commons/f/fd/Puma_Logo.svg",
-            },
-            {
-              name: "Zara",
-              logo: "https://upload.wikimedia.org/wikipedia/commons/f/fd/Zara_Logo.svg",
-            },
-            {
-              name: "H&M",
-              logo: "https://upload.wikimedia.org/wikipedia/commons/5/53/H%26M-Logo.svg",
-            },
-            {
-              name: "Levi's",
-              logo: "https://upload.wikimedia.org/wikipedia/commons/0/0b/Levi%27s_logo.svg",
-            },
+       <div className="grid grid-cols-2 md:grid-cols-6 gap-6">
+  {[
+    {
+      name: "Nike",
+      logo: "https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg",
+    },
+    {
+      name: "Adidas",
+      logo: "https://upload.wikimedia.org/wikipedia/commons/2/20/Adidas_Logo.svg",
+    },
+    {
+      name: "Puma",
+      logo: pumaLogo,
+    },
+    {
+      name: "Zara",
+      logo: "https://upload.wikimedia.org/wikipedia/commons/f/fd/Zara_Logo.svg",
+    },
+    {
+      name: "H&M",
+      logo: "https://upload.wikimedia.org/wikipedia/commons/5/53/H%26M-Logo.svg",
+    },
+    {
+      name: "Levi's",
+      logo: levisLogo,
+    },
           ].map((brand, i) => (
             <div
               key={i}
