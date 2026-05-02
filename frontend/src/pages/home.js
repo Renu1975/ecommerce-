@@ -393,8 +393,8 @@ const handleDiscount = () => {
     },
     {
       name: "Puma",
-      logo: "https://upload.wikimedia.org/wikipedia/commons/f/fd/Puma_Logo.svg",
-    },
+      logo: "https://e7.pngegg.com/pngimages/816/974/png-clipart-puma-logo-puma-logo-sneakers-clothing-brand-adidas-cat-like-mammal-carnivoran-thumbnail.png"
+     },
     {
       name: "Zara",
       logo: "https://upload.wikimedia.org/wikipedia/commons/f/fd/Zara_Logo.svg",
@@ -405,7 +405,7 @@ const handleDiscount = () => {
     },
     {
       name: "Levi's",
-      logo: "https://upload.wikimedia.org/wikipedia/commons/0/0b/Levi%27s_logo.svg",
+      logo: "https://fabrikbrands.com/wp-content/uploads/Levis-Logo-History-1b-1155x770.png",
     },
           ].map((brand, i) => (
             <div
